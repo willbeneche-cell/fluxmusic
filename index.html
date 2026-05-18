@@ -644,41 +644,87 @@ async function triggerSearch(query) {
             });
         }
 
-        // CHARGEMENT ET LECTURE DIRECTE (L'extraction magique de Piped)
+// CHARGEMENT ET LECTURE DIRECTE (Version Hautement Sécurisée avec Fallbacks)
         async function playTrack(id, title, artist, cover) {
             try {
-                // Métadonnées immédiates pour réactivité de l'UI
+                // 1. Métadonnées immédiates pour la réactivité de l'UI
                 appState.currentTrack = { id, title, artist, cover };
                 updatePlayerUI();
                 
                 // Activation du Mini Player Mobile
                 document.getElementById('mini-player').classList.remove('hidden');
 
-                // Récupération des streams bruts
-                const res = await fetch(`${activeInstance}/streams/${id}`);
-                if (!res.ok) throw new Error("Impossible d'extraire le flux.");
-                
-                const data = await res.json();
-                
-                // Chercher le flux audio uniquement de meilleure qualité (généralement WebM/Opus ou M4A)
-                const audioStream = data.audioStreams.find(stream => stream.mimeType.includes('audio'));
-                const streamUrl = audioStream ? audioStream.url : data.audioStreams[0].url;
+                // Mettre les boutons Play en mode "Chargement" (Spinner)
+                const btn = document.getElementById('btn-play');
+                const miniBtn = document.getElementById('mini-btn-play');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                miniBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-white text-xl"></i>';
 
-                // Attribuer l'url brute à la balise de lecture HTML5
-                audio.src = streamUrl;
-                audio.play();
+                // Ajouter à l'historique (sans créer de doublons consécutifs)
+                if (appState.history.length === 0 || appState.history[appState.history.length - 1].id !== id) {
+                    appState.history.push({ id, title, artist, cover });
+                }
+
+                let audioUrl = null;
+
+                // 2. CASCADE : Liste de serveurs Piped pour extraire le flux en cascade
+                const streamInstances = [
+                    `https://pipedapi.kavin.rocks/streams/${id}`,
+                    `https://api.piped.projectsegfau.lt/streams/${id}`,
+                    `https://pipedapi.privacydev.net/streams/${id}`,
+                    `https://pipedapi.moomoo.me/streams/${id}`
+                ];
+
+                for (const url of streamInstances) {
+                    try {
+                        console.log("Tentative d'extraction du flux via :", url);
+                        const res = await fetch(url);
+                        if (!res.ok) continue; // Si le serveur bloque, on passe au suivant directement
+                        
+                        const data = await res.json();
+                        if (data.audioStreams && data.audioStreams.length > 0) {
+                            // On cherche en priorité le flux audio Opus/WebM (Meilleure qualité)
+                            const audioStream = data.audioStreams.find(stream => stream.mimeType.includes('audio/webm')) 
+                                             || data.audioStreams.find(stream => stream.mimeType.includes('audio'));
+                            if (audioStream) {
+                                audioUrl = audioStream.url;
+                                break; // Flux trouvé = on arrête la recherche
+                            }
+                        }
+                    } catch (e) {
+                        console.warn("Échec sur ce serveur, tentative sur le suivant...");
+                    }
+                }
+
+                // 3. PLAN DE SECOURS : Flux direct Invidious (Anti-blocage Cloudflare)
+                if (!audioUrl) {
+                    console.log("Plan de secours activé : Utilisation du flux direct Invidious");
+                    // itag=251 correspond au format WebM Opus haute qualité garanti
+                    audioUrl = `https://invidious.projectsegfau.lt/latest_version?id=${id}&itag=251`;
+                }
+
+                // 4. LECTURE AUDIO
+                audio.src = audioUrl;
+                audio.crossOrigin = "anonymous"; // Empêche les blocages CORS du navigateur
+                
+                await audio.play();
                 
                 appState.isPlaying = true;
                 updatePlayButtons(true);
-                
-                // Ajouter à l'historique
-                appState.history.push({ id, title, artist, cover });
 
             } catch (error) {
-                console.error("Erreur de flux, basculement d'instance : ", error);
-                nextInstance();
-                // Essayer de relancer la lecture après reconnexion
-                setTimeout(() => playTrack(id, title, artist, cover), 1000);
+                console.error("Erreur fatale de lecture : ", error);
+                
+                // 5. ULTIME TENTATIVE : Format M4A universel si le WebM plante
+                try {
+                    audio.src = `https://invidious.nerdvpn.de/latest_version?id=${id}&itag=140`;
+                    await audio.play();
+                    appState.isPlaying = true;
+                    updatePlayButtons(true);
+                } catch (fallbackErr) {
+                    alert("Désolé, ce morceau est temporairement protégé par YouTube ou indisponible.");
+                    updatePlayButtons(false);
+                }
             }
         }
 
