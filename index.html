@@ -406,77 +406,90 @@
     <script>
         // CONFIGURATION DES INSTANCES PIPED (Moteur intelligent de basculement si un serveur lague)
 // CONFIGURATION DES INSTANCES PIPED (Mise à jour avec des serveurs plus stables)
-const PIPED_INSTANCES = [
-    "https://pipedapi.privacydev.net",
-    "https://pipedapi.moomoo.me",
-    "https://piped-api.garudalinux.org",
-    "https://pipedapi.kavin.rocks",
-    "https://api.piped.yt"
-];
-let currentInstanceIndex = 0;
-let activeInstance = PIPED_INSTANCES[currentInstanceIndex];
-let retryCount = 0; // Nouvelle variable de sécurité
+// =========================================================================
+    // CONFIGURATION ET MOTEUR DES INSTANCES (CORRIGÉ POUR ÉVITER LES BOUCLES)
+    // =========================================================================
+// =========================================================================
+    // CONFIGURATION ET MOTEUR DES INSTANCES (OPTIMISÉ POUR VERCEL)
+    // =========================================================================
+    const PIPED_INSTANCES = [
+        "https://pipedapi.kavin.rocks",
+        "https://api.piped.projectsegfau.lt",
+        "https://piped-api.garudalinux.org",
+        "https://pipedapi.privacydev.net",
+        "https://pipedapi.moomoo.me",
+        "https://pipedapi.synopy.io",
+        "https://pipedapi.oxymoron.biz",
+        "https://pipedapi.as777.me",
+        "https://pipedapi.isw.me"
+    ];
+    let currentInstanceIndex = 0;
+    let activeInstance = PIPED_INSTANCES[currentInstanceIndex];
+    let retryCount = 0;
 
-        // ÉTAT GÉNÉRAL DE L'APPLICATION (State)
-        let appState = {
-            currentTrack: null,
-            queue: [],
-            history: [],
-            playlists: JSON.parse(localStorage.getItem('flux_playlists')) || {},
-            likedSongs: JSON.parse(localStorage.getItem('flux_liked_songs')) || [],
-            isPlaying: false,
-            isMuted: false,
-            lastVolume: 0.8,
-            isShuffle: false,
-            isRepeat: false,
-            activeTab: 'home',
-            currentPlaylistDetail: null
-        };
+    // ÉTAT GÉNÉRAL DE L'APPLICATION (State)
+    let appState = {
+        currentTrack: null,
+        queue: [],
+        history: [],
+        playlists: JSON.parse(localStorage.getItem('flux_playlists')) || {},
+        likedSongs: JSON.parse(localStorage.getItem('flux_liked_songs')) || [],
+        isPlaying: false,
+        isMuted: false,
+        lastVolume: 0.8,
+        isShuffle: false,
+        isRepeat: false,
+        activeTab: 'home',
+        currentPlaylistDetail: null
+    };
 
-        const audio = document.getElementById('audio-player');
+    const audio = document.getElementById('audio-player');
 
-        // INITIALISATION
-        window.addEventListener('load', () => {
-            testInstanceConnection();
-            renderSidebarPlaylists();
-            updateFavoritesUI();
-            
-            // Événements natifs du lecteur Audio
-            audio.addEventListener('timeupdate', updateProgress);
-            audio.addEventListener('ended', onTrackEnded);
-            audio.addEventListener('loadedmetadata', () => {
-                document.getElementById('progress-total').innerText = formatTime(audio.duration);
-            });
-
-            // Gérer la recherche sur entrée
-            document.getElementById('search-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') triggerSearch(e.target.value);
-            });
-            document.getElementById('mobile-search-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') triggerSearch(e.target.value);
-            });
+    // INITIALISATION
+    window.addEventListener('load', () => {
+        testInstanceConnection();
+        renderSidebarPlaylists();
+        updateFavoritesUI();
+        
+        audio.addEventListener('timeupdate', updateProgress);
+        audio.addEventListener('ended', onTrackEnded);
+        audio.addEventListener('loadedmetadata', () => {
+            document.getElementById('progress-total').innerText = formatTime(audio.duration);
         });
 
-        // RECHERCHE EN DIRECT VIA PIPED API (Hérité de YouTube Music)
-        async function testInstanceConnection() {
-            // Permet de s'assurer de l'instance opérationnelle la plus rapide
+        document.getElementById('search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') triggerSearch(e.target.value);
+        });
+        document.getElementById('mobile-search-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') triggerSearch(e.target.value);
+        });
+    });
+
+    // TEST DES INSTANCES SANS BOUCLE INFINIE RISQUÉE
+    async function testInstanceConnection() {
+        for (let i = 0; i < PIPED_INSTANCES.length; i++) {
             try {
-                const res = await fetch(`${activeInstance}/trending?region=FR`);
+                const res = await fetch(`${PIPED_INSTANCES[i]}/trending?region=FR`);
                 if (res.ok) {
+                    currentInstanceIndex = i;
+                    activeInstance = PIPED_INSTANCES[i];
                     const cleanUrl = activeInstance.replace('https://', '');
                     document.getElementById('instance-name').innerText = `Instance : ${cleanUrl}`;
+                    return; 
                 }
             } catch (err) {
-                console.warn(`Instance ${activeInstance} instable. Basculement...`);
-                nextInstance();
+                console.warn(`${PIPED_INSTANCES[i]} indisponible au démarrage.`);
             }
         }
+        document.getElementById('instance-name').innerText = "Mode Secours (Serveurs instables)";
+    }
 
-        function nextInstance() {
-            currentInstanceIndex = (currentInstanceIndex + 1) % PIPED_INSTANCES.length;
-            activeInstance = PIPED_INSTANCES[currentInstanceIndex];
-            testInstanceConnection();
-        }
+    function nextInstance() {
+        currentInstanceIndex = (currentInstanceIndex + 1) % PIPED_INSTANCES.length;
+        activeInstance = PIPED_INSTANCES[currentInstanceIndex];
+        const cleanUrl = activeInstance.replace('https://', '');
+        document.getElementById('instance-name').innerText = `Instance : ${cleanUrl}`;
+    }
 
         // NAVIGATION ENTRE ONGLETS
         function switchTab(tabId, data = null) {
@@ -535,45 +548,59 @@ async function triggerSearch(query) {
     resultsDiv.classList.add('hidden');
     genresDiv.classList.add('hidden');
 
-    try {
-        // Requête vers l'API avec le filtre musique
-        const response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}&filter=music_songs`);
-        if (!response.ok) throw new Error('Erreur de réponse du serveur API');
-        
-        const data = await response.json();
-        
-        // Sécurité : Selon les versions de l'API, les résultats sont dans data.items ou directement dans data
-        const items = data.items || (Array.isArray(data) ? data : []);
-        
-        retryCount = 0; // On réinitialise le compteur car ça a fonctionné !
-        renderSearchResults(items);
-    } catch (error) {
-        console.error(`Échec avec l'instance ${activeInstance} :`, error);
-        
-        // Si on n'a pas encore testé toutes les instances, on passe à la suivante
-        if (retryCount < PIPED_INSTANCES.length) {
+    // FIX CRUCIAL : On remet à zéro pour chaque nouvelle recherche
+    retryCount = 0; 
+
+    // On boucle à travers les instances de manière linéaire
+    while (retryCount < PIPED_INSTANCES.length) {
+        try {
+            console.log(`Tentative sur : ${activeInstance}`);
+            
+            // Étape 1 : On tente la recherche filtrée standard
+            let response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}&filter=songs`);
+            
+            // Étape 2 : Si le serveur rejette le filtre (Erreur 400/403 Cloudflare), on tente direct SANS filtre
+            if (!response.ok) {
+                response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}`);
+            }
+            
+            if (!response.ok) throw new Error('Instance restrictive ou saturée');
+            
+            const data = await response.json();
+            let items = data.items || (Array.isArray(data) ? data : []);
+            
+            if (items.length === 0) {
+                throw new Error('Pas de résultats');
+            }
+
+            retryCount = 0; 
+            renderSearchResults(items);
+            return; // Succès, on s'arrête ici !
+        } catch (error) {
+            console.warn(`Échec avec l'instance ${activeInstance}. Passage à la suivante...`);
             retryCount++;
-            nextInstance(); 
-            setTimeout(() => triggerSearch(query), 1000);
-        } else {
-            // Si TOUTES les instances ont échoué, on arrête le chargement et on affiche l'erreur
-            retryCount = 0;
-            loader.classList.add('hidden');
-            resultsDiv.classList.remove('hidden');
-            resultsDiv.innerHTML = `
-                <div class="text-center py-12 text-red-500 max-w-md mx-auto space-y-3">
-                    <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
-                    <p class="font-bold text-lg text-white">Connexion aux flux audio impossible</p>
-                    <p class="text-xs text-spotify-grey">Les serveurs musicaux sont temporairement indisponibles ou votre navigateur bloque la connexion locale (Erreur CORS).</p>
-                    <div class="pt-2">
-                        <p class="text-[11px] text-spotify-green bg-spotify-lightDark p-2 rounded border border-neutral-800 text-left font-mono">
-                            💡 Pour régler ça : Ne lance pas le fichier en double-cliquant dessus. Déploie-le gratuitement sur Vercel/Netlify, ou utilise l'extension "Live Server" sur VS Code.
-                        </p>
-                    </div>
-                </div>
-            `;
+            nextInstance();
+            // Pause ultra-courte pour éviter le spam réseau
+            await new Promise(resolve => setTimeout(resolve, 100));
         }
     }
+
+    // Si on arrive ici, toutes les routes ont échoué
+    retryCount = 0;
+    loader.classList.add('hidden');
+    resultsDiv.classList.remove('hidden');
+    resultsDiv.innerHTML = `
+        <div class="text-center py-12 text-red-500 max-w-md mx-auto space-y-3">
+            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
+            <p class="font-bold text-lg text-white">Connexion aux flux audio impossible</p>
+            <p class="text-xs text-spotify-grey">Les passerelles subissent des restrictions Cloudflare sur Vercel actuellement. Réessayez dans un instant.</p>
+            <div class="pt-2">
+                <button onclick="triggerSearch('${escapeHtml(query)}')" class="bg-spotify-green text-black font-bold px-4 py-2 rounded-full text-xs hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-rotate-right mr-1"></i> Réessayer la recherche
+                </button>
+            </div>
+        </div>
+    `;
 }
 
         function renderSearchResults(items) {
