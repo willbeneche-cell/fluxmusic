@@ -566,6 +566,14 @@ async function triggerSearch(query) {
             
             if (!response.ok) throw new Error('Instance restrictive ou saturée');
             
+            // --- PROTECTION ANTI-BLOCAGE CLOUDFLARE ---
+            // On vérifie si la réponse est bien du JSON et pas une page HTML d'erreur/sécurité
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Le serveur a renvoyé du HTML (blocage Cloudflare). Passage à l'instance suivante.");
+            }
+            // ------------------------------------------
+            
             const data = await response.json();
             let items = data.items || (Array.isArray(data) ? data : []);
             
@@ -577,7 +585,7 @@ async function triggerSearch(query) {
             renderSearchResults(items);
             return; // Succès, on s'arrête ici !
         } catch (error) {
-            console.warn(`Échec avec l'instance ${activeInstance}. Passage à la suivante...`);
+            console.warn(`Échec avec l'instance ${activeInstance}: ${error.message}`);
             retryCount++;
             nextInstance();
             // Pause ultra-courte pour éviter le spam réseau
@@ -675,20 +683,27 @@ async function triggerSearch(query) {
                     `https://pipedapi.moomoo.me/streams/${id}`
                 ];
 
-                for (const url of streamInstances) {
+            for (const url of streamInstances) {
                     try {
                         console.log("Tentative d'extraction du flux via :", url);
                         const res = await fetch(url);
-                        if (!res.ok) continue; // Si le serveur bloque, on passe au suivant directement
+                        if (!res.ok) continue; 
                         
+                        // --- NOUVEAU BLOC ANTI-CLOUDFLARE POUR LA LECTURE ---
+                        const contentType = res.headers.get("content-type");
+                        if (!contentType || !contentType.includes("application/json")) {
+                            console.warn("Cloudflare a bloqué cette requête (Page HTML reçue). Passage au serveur suivant.");
+                            continue; // On ignore ce serveur et on passe au suivant sans crasher !
+                        }
+                        // ----------------------------------------------------
+
                         const data = await res.json();
                         if (data.audioStreams && data.audioStreams.length > 0) {
-                            // On cherche en priorité le flux audio Opus/WebM (Meilleure qualité)
                             const audioStream = data.audioStreams.find(stream => stream.mimeType.includes('audio/webm')) 
                                              || data.audioStreams.find(stream => stream.mimeType.includes('audio'));
                             if (audioStream) {
                                 audioUrl = audioStream.url;
-                                break; // Flux trouvé = on arrête la recherche
+                                break; 
                             }
                         }
                     } catch (e) {
