@@ -537,79 +537,60 @@
             triggerSearch(keyword);
         }
 
-async function triggerSearch(query) {
-    if (!query.trim()) return;
-
-    const loader = document.getElementById('search-loading');
-    const resultsDiv = document.getElementById('search-results');
-    const genresDiv = document.getElementById('search-genres');
-
-    loader.classList.remove('hidden');
-    resultsDiv.classList.add('hidden');
-    genresDiv.classList.add('hidden');
-
-    // FIX CRUCIAL : On remet à zéro pour chaque nouvelle recherche
-    retryCount = 0; 
-
-    // On boucle à travers les instances de manière linéaire
-    while (retryCount < PIPED_INSTANCES.length) {
-        try {
-            console.log(`Tentative sur : ${activeInstance}`);
+// RECHERCHE PAR INSTANCE EN CASCADE
+        async function triggerSearch(query) {
+            if (!query.trim()) return;
             
-            // Étape 1 : On tente la recherche filtrée standard
-            let response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}&filter=songs`);
+            // UI : Affichage de l'onglet Recherche et du Spinner
+            switchTab('search');
+            document.getElementById('header-search-container').classList.remove('hidden');
+            document.getElementById('search-loading').classList.remove('hidden');
+            document.getElementById('search-results').classList.add('hidden');
+            document.getElementById('search-genres').classList.add('hidden');
+
+            let retryCount = 0;
             
-            // Étape 2 : Si le serveur rejette le filtre (Erreur 400/403 Cloudflare), on tente direct SANS filtre
-            if (!response.ok) {
-                response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}`);
+            while (retryCount < PIPED_INSTANCES.length) {
+                try {
+                    console.log(`Tentative de recherche sur : ${activeInstance}`);
+                    
+                    let response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}&filter=songs`);
+                    
+                    if (!response.ok) {
+                        response = await fetch(`${activeInstance}/search?q=${encodeURIComponent(query)}`);
+                    }
+                    
+                    if (!response.ok) throw new Error('Instance restrictive ou saturée');
+                    
+                    // PROTECTION ANTI-BLOCAGE CLOUDFLARE
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        throw new Error("Le serveur a renvoyé du HTML (blocage Cloudflare).");
+                    }
+                    
+                    const data = await response.json();
+                    let items = data.items || (Array.isArray(data) ? data : []);
+                    
+                    if (items.length === 0) {
+                        throw new Error('Pas de résultats');
+                    }
+
+                    retryCount = 0; 
+                    document.getElementById('search-loading').classList.add('hidden');
+                    renderSearchResults(items);
+                    return; 
+                } catch (error) {
+                    console.warn(`Échec recherche avec l'instance ${activeInstance}: ${error.message}`);
+                    retryCount++;
+                    nextInstance();
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                }
             }
             
-            if (!response.ok) throw new Error('Instance restrictive ou saturée');
-            
-            // --- PROTECTION ANTI-BLOCAGE CLOUDFLARE ---
-            // On vérifie si la réponse est bien du JSON et pas une page HTML d'erreur/sécurité
-            const contentType = response.headers.get("content-type");
-            if (!contentType || !contentType.includes("application/json")) {
-                throw new Error("Le serveur a renvoyé du HTML (blocage Cloudflare). Passage à l'instance suivante.");
-            }
-            // ------------------------------------------
-            
-            const data = await response.json();
-            let items = data.items || (Array.isArray(data) ? data : []);
-            
-            if (items.length === 0) {
-                throw new Error('Pas de résultats');
-            }
-
-            retryCount = 0; 
-            renderSearchResults(items);
-            return; // Succès, on s'arrête ici !
-        } catch (error) {
-            console.warn(`Échec avec l'instance ${activeInstance}: ${error.message}`);
-            retryCount++;
-            nextInstance();
-            // Pause ultra-courte pour éviter le spam réseau
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Si tout a échoué
+            document.getElementById('search-loading').classList.add('hidden');
+            alert("Tous les serveurs sont actuellement surchargés. Réessayez dans quelques instants.");
         }
-    }
-
-    // Si on arrive ici, toutes les routes ont échoué
-    retryCount = 0;
-    loader.classList.add('hidden');
-    resultsDiv.classList.remove('hidden');
-    resultsDiv.innerHTML = `
-        <div class="text-center py-12 text-red-500 max-w-md mx-auto space-y-3">
-            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
-            <p class="font-bold text-lg text-white">Connexion aux flux audio impossible</p>
-            <p class="text-xs text-spotify-grey">Les passerelles subissent des restrictions Cloudflare sur Vercel actuellement. Réessayez dans un instant.</p>
-            <div class="pt-2">
-                <button onclick="triggerSearch('${escapeHtml(query)}')" class="bg-spotify-green text-black font-bold px-4 py-2 rounded-full text-xs hover:scale-105 transition-transform">
-                    <i class="fa-solid fa-rotate-right mr-1"></i> Réessayer la recherche
-                </button>
-            </div>
-        </div>
-    `;
-}
 
         function renderSearchResults(items) {
             const loader = document.getElementById('search-loading');
@@ -652,10 +633,10 @@ async function triggerSearch(query) {
             });
         }
 
-// CHARGEMENT ET LECTURE DIRECTE (Version Hautement Sécurisée avec Fallbacks)
+// CHARGEMENT ET LECTURE DIRECTE (Version Anti-Blocage & Flux Universel)
         async function playTrack(id, title, artist, cover) {
             try {
-                // 1. Métadonnées immédiates pour la réactivité de l'UI
+                // Métadonnées immédiates pour la réactivité de l'UI
                 appState.currentTrack = { id, title, artist, cover };
                 updatePlayerUI();
                 
@@ -665,79 +646,82 @@ async function triggerSearch(query) {
                 // Mettre les boutons Play en mode "Chargement" (Spinner)
                 const btn = document.getElementById('btn-play');
                 const miniBtn = document.getElementById('mini-btn-play');
-                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-                miniBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-white text-xl"></i>';
+                if(btn) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                if(miniBtn) miniBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-white text-xl"></i>';
 
-                // Ajouter à l'historique (sans créer de doublons consécutifs)
+                // Ajouter à l'historique sans doublons
                 if (appState.history.length === 0 || appState.history[appState.history.length - 1].id !== id) {
                     appState.history.push({ id, title, artist, cover });
                 }
 
                 let audioUrl = null;
 
-                // 2. CASCADE : Liste de serveurs Piped pour extraire le flux en cascade
+                // 1. Liste dynamique d'extraction basée sur tes instances configurées
                 const streamInstances = [
+                    `${activeInstance}/streams/${id}`,
                     `https://pipedapi.kavin.rocks/streams/${id}`,
                     `https://api.piped.projectsegfau.lt/streams/${id}`,
-                    `https://pipedapi.privacydev.net/streams/${id}`,
-                    `https://pipedapi.moomoo.me/streams/${id}`
+                    `https://pipedapi.privacydev.net/streams/${id}`
                 ];
 
-            for (const url of streamInstances) {
+                for (const url of streamInstances) {
                     try {
                         console.log("Tentative d'extraction du flux via :", url);
                         const res = await fetch(url);
-                        if (!res.ok) continue; 
+                        if (!res.ok) continue;
                         
-                        // --- NOUVEAU BLOC ANTI-CLOUDFLARE POUR LA LECTURE ---
                         const contentType = res.headers.get("content-type");
                         if (!contentType || !contentType.includes("application/json")) {
-                            console.warn("Cloudflare a bloqué cette requête (Page HTML reçue). Passage au serveur suivant.");
-                            continue; // On ignore ce serveur et on passe au suivant sans crasher !
+                            continue; // Évite les fausses pages HTML de Cloudflare
                         }
-                        // ----------------------------------------------------
 
                         const data = await res.json();
                         if (data.audioStreams && data.audioStreams.length > 0) {
+                            // On cherche l'audio pur de meilleure qualité
                             const audioStream = data.audioStreams.find(stream => stream.mimeType.includes('audio/webm')) 
                                              || data.audioStreams.find(stream => stream.mimeType.includes('audio'));
-                            if (audioStream) {
+                            if (audioStream && audioStream.url) {
                                 audioUrl = audioStream.url;
-                                break; 
+                                break;
                             }
                         }
                     } catch (e) {
-                        console.warn("Échec sur ce serveur, tentative sur le suivant...");
+                        console.warn("Échec sur l'instance, tentative sur la suivante...");
                     }
                 }
 
-                // 3. PLAN DE SECOURS : Flux direct Invidious (Anti-blocage Cloudflare)
+                // 2. PLAN DE SECOURS ABSOLU (Si toutes les instances Piped échouent ou expirent)
                 if (!audioUrl) {
-                    console.log("Plan de secours activé : Utilisation du flux direct Invidious");
-                    // itag=251 correspond au format WebM Opus haute qualité garanti
+                    console.log("Plan de secours activé : Utilisation de la passerelle Invidious (Anti-403)");
+                    // itag 251 = WebM Opus Audio Haute Qualité / itag 140 = AAC M4A universel
                     audioUrl = `https://invidious.projectsegfau.lt/latest_version?id=${id}&itag=251`;
                 }
 
-                // 4. LECTURE AUDIO
-                audio.src = audioUrl;
-                audio.crossOrigin = "anonymous"; // Empêche les blocages CORS du navigateur
+                // 3. FORCE LE LECTEUR HTML5 A ACCEPTER LE FLUX
+                audio.removeAttribute('src'); 
+                audio.load(); // Réinitialise proprement le lecteur pour effacer les anciens plantages
                 
+                audio.crossOrigin = "anonymous"; // Évite les blocages de sécurité CORS
+                audio.src = audioUrl;
+                
+                // Lancement de la lecture avec capture d'erreur matérielle
                 await audio.play();
                 
                 appState.isPlaying = true;
                 updatePlayButtons(true);
 
             } catch (error) {
-                console.error("Erreur fatale de lecture : ", error);
+                console.error("Erreur de lecture, tentative via le flux audio AAC secondaire...", error);
                 
-                // 5. ULTIME TENTATIVE : Format M4A universel si le WebM plante
+                // 4. ULTIME TENTATIVE : Redirection vers un format audio compressé standard (M4A)
                 try {
                     audio.src = `https://invidious.nerdvpn.de/latest_version?id=${id}&itag=140`;
                     await audio.play();
                     appState.isPlaying = true;
                     updatePlayButtons(true);
                 } catch (fallbackErr) {
-                    alert("Désolé, ce morceau est temporairement protégé par YouTube ou indisponible.");
+                    console.error("Impossible de lire ce morceau :", fallbackErr);
+                    alert("Ce morceau rencontre des restrictions imposées par YouTube. Tentez un autre titre !");
                     updatePlayButtons(false);
                 }
             }
