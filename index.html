@@ -36,7 +36,6 @@
             user-select: none;
             overflow: hidden;
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -92,14 +91,13 @@
                         <span class="text-xs font-bold uppercase tracking-wider">Bibliothèque</span>
                         <button onclick="createPlaylistPrompt()" class="hover:scale-105 transition-transform"><i class="fa-solid fa-plus text-sm"></i></button>
                     </div>
-                    <div id="sidebar-playlists" class="space-y-3 max-h-60 overflow-y-auto pr-2 text-sm text-spotify-grey font-medium">
-                        </div>
+                    <div id="sidebar-playlists" class="space-y-3 max-h-60 overflow-y-auto pr-2 text-sm text-spotify-grey font-medium"></div>
                 </div>
             </div>
 
             <div class="bg-spotify-lightDark rounded-lg p-3 text-xs text-spotify-grey space-y-1">
-                <p class="font-semibold text-white"><i class="fa-solid fa-mobile-screen-button mr-1"></i> Mode Appli Mobile</p>
-                <p class="text-[11px] leading-tight">Ajoutez ce site sur l'écran d'accueil de votre téléphone pour l'utiliser comme une vraie application.</p>
+                <p class="font-semibold text-white"><i class="fa-solid fa-shield-halved text-spotify-green mr-1"></i> Tunnel Universel</p>
+                <p class="text-[11px] leading-tight">Proxy de secours actif. Toutes les requêtes sont enveloppées pour contourner CORS.</p>
             </div>
         </aside>
 
@@ -107,11 +105,6 @@
             
             <header class="sticky top-0 bg-spotify-dark/95 backdrop-blur-md px-6 py-4 flex items-center justify-between z-10">
                 <div class="flex items-center space-x-4 flex-grow max-w-lg">
-                    <div class="flex space-x-2 hidden sm:flex">
-                        <button class="bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/70"><i class="fa-solid fa-chevron-left"></i></button>
-                        <button class="bg-black/40 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-black/70"><i class="fa-solid fa-chevron-right"></i></button>
-                    </div>
-                    
                     <div id="header-search-container" class="relative w-full">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-spotify-grey"></i>
                         <input id="search-input" type="text" placeholder="Artistes, titres ou genres..." class="w-full bg-white text-black pl-12 pr-4 py-2 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-spotify-green">
@@ -119,8 +112,8 @@
                 </div>
 
                 <div class="flex items-center space-x-3 text-xs bg-black/40 px-3 py-1.5 rounded-full text-spotify-grey">
-                    <span id="instance-indicator" class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span id="instance-name" class="font-medium">Connexion...</span>
+                    <span id="instance-indicator" class="w-2.5 h-2.5 rounded-full bg-spotify-green animate-pulse"></span>
+                    <span id="instance-name" class="font-medium">Proxy Sécurisé</span>
                 </div>
             </header>
 
@@ -133,29 +126,22 @@
                             <h2 class="text-3xl font-extrabold md:text-4xl">Le son en flux continu pour toi.</h2>
                         </div>
                         <p class="text-sm text-spotify-grey max-w-sm z-10">Votre hub musical branché sur le catalogue mondial.</p>
-                        <div class="absolute right-8 bottom-0 top-0 w-1/3 hidden md:flex items-center justify-center">
-                            <i class="fa-solid fa-compact-disc text-[140px] text-white/5 animate-spin" style="animation-duration: 10s;"></i>
-                        </div>
                     </div>
 
                     <div class="space-y-4">
                         <h3 class="text-xl font-bold">Raccourcis Recommandés</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4" id="home-shortcuts">
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="home-shortcuts">
                             <div onclick="searchKeyword('Lofi beats')" class="bg-spotify-lightDark rounded-md overflow-hidden flex items-center space-x-3 hover:bg-spotify-hover cursor-pointer group transition-all duration-300">
                                 <div class="w-16 h-16 shrink-0 bg-purple-900 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-mug-hot"></i></div>
-                                <span class="font-bold text-sm line-clamp-2">Lofi Beats</span>
+                                <span class="font-bold text-sm">Lofi Beats</span>
                             </div>
                             <div onclick="searchKeyword('Electro Chill')" class="bg-spotify-lightDark rounded-md overflow-hidden flex items-center space-x-3 hover:bg-spotify-hover cursor-pointer group transition-all duration-300">
-                                <div class="w-16 h-16 shrink-0 bg-blue-900 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-bolt-lightning"></i></div>
-                                <span class="font-bold text-sm line-clamp-2">Electro Chill</span>
+                                <div class="w-16 h-16 shrink-0 bg-blue-900 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-bolt"></i></div>
+                                <span class="font-bold text-sm">Electro Chill</span>
                             </div>
                             <div onclick="searchKeyword('Rap Français')" class="bg-spotify-lightDark rounded-md overflow-hidden flex items-center space-x-3 hover:bg-spotify-hover cursor-pointer group transition-all duration-300">
                                 <div class="w-16 h-16 shrink-0 bg-red-900 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-microphone-lines"></i></div>
-                                <span class="font-bold text-sm line-clamp-2">Rap Français</span>
-                            </div>
-                            <div onclick="searchKeyword('Pop Hits')" class="bg-spotify-lightDark rounded-md overflow-hidden flex items-center space-x-3 hover:bg-spotify-hover cursor-pointer group transition-all duration-300">
-                                <div class="w-16 h-16 shrink-0 bg-emerald-900 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-fire"></i></div>
-                                <span class="font-bold text-sm line-clamp-2">Pop Hits</span>
+                                <span class="font-bold text-sm">Rap Français</span>
                             </div>
                         </div>
                     </div>
@@ -172,7 +158,7 @@
 
                     <div id="search-loading" class="hidden flex flex-col items-center justify-center py-20 space-y-3">
                         <div class="w-12 h-12 border-4 border-spotify-green border-t-transparent rounded-full animate-spin"></div>
-                        <p class="text-sm text-spotify-grey font-medium">Recherche sécurisée sur les canaux libres...</p>
+                        <p class="text-sm text-spotify-grey font-medium">Connexion via le tunnel de secours universel...</p>
                     </div>
 
                     <div id="search-results" class="space-y-3"></div>
@@ -187,10 +173,6 @@
                 <section id="tab-playlist-detail" class="tab-content space-y-6 hidden">
                     <h2 id="playlist-detail-title" class="text-3xl font-black">Playlist</h2>
                     <p id="playlist-detail-count" class="text-sm text-spotify-grey">0 titre</p>
-                    <div class="flex space-x-3">
-                        <button onclick="playAllFromPlaylist()" class="bg-spotify-green text-black font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform">Tout lire</button>
-                        <button onclick="deleteCurrentPlaylist()" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-full font-semibold text-sm">Supprimer</button>
-                    </div>
                     <div id="playlist-detail-list" class="space-y-3"></div>
                 </section>
             </div>
@@ -220,16 +202,13 @@
 
     <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-black border-t border-neutral-900 flex justify-around items-center text-spotify-grey z-20">
         <button onclick="switchTab('home')" class="flex flex-col items-center space-y-1 text-xs nav-btn text-spotify-green" data-tab="home">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span>Accueil</span>
+            <i class="fa-solid fa-house text-lg"></i> <span>Accueil</span>
         </button>
         <button onclick="switchTab('search')" class="flex flex-col items-center space-y-1 text-xs nav-btn" data-tab="search">
-            <i class="fa-solid fa-magnifying-glass text-lg"></i>
-            <span>Recherche</span>
+            <i class="fa-solid fa-magnifying-glass text-lg"></i> <span>Recherche</span>
         </button>
         <button onclick="switchTab('favorites')" class="flex flex-col items-center space-y-1 text-xs nav-btn" data-tab="favorites">
-            <i class="fa-solid fa-heart text-lg"></i>
-            <span>Favoris</span>
+            <i class="fa-solid fa-heart text-lg"></i> <span>Favoris</span>
         </button>
     </nav>
 
@@ -245,11 +224,9 @@
 
         <div class="flex flex-col items-center space-y-2 flex-grow max-w-xl px-4">
             <div class="flex items-center space-x-6">
-                <button id="btn-shuffle" onclick="toggleShuffle()" class="text-spotify-grey hover:text-white text-xs"><i class="fa-solid fa-shuffle"></i></button>
-                <button onclick="playPrevious()" class="text-spotify-grey hover:text-white text-lg"><i class="fa-solid fa-backward-step"></i></button>
-                <button id="btn-play" onclick="togglePlay()" class="bg-white text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-105 transition-transform"><i class="fa-solid fa-play text-sm ml-0.5"></i></button>
-                <button onclick="playNext()" class="text-spotify-grey hover:text-white text-lg"><i class="fa-solid fa-forward-step"></i></button>
-                <button id="btn-repeat" onclick="toggleRepeat()" class="text-spotify-grey hover:text-white text-xs"><i class="fa-solid fa-repeat"></i></button>
+                <button onclick="playPrevious()" class="text-spotify-grey hover:text-white text-base"><i class="fa-solid fa-backward-step"></i></button>
+                <button id="btn-play" onclick="togglePlay()" class="bg-white text-black w-8 h-8 rounded-full flex items-center justify-center hover:scale-105 transition-transform"><i class="fa-solid fa-play text-xs ml-0.5"></i></button>
+                <button onclick="playNext()" class="text-spotify-grey hover:text-white text-base"><i class="fa-solid fa-forward-step"></i></button>
             </div>
             <div class="w-full flex items-center space-x-2 text-[11px] text-spotify-grey">
                 <span id="time-current">0:00</span>
@@ -259,88 +236,98 @@
         </div>
 
         <div class="flex items-center justify-end space-x-4 w-1/4 hidden sm:flex">
-            <button onclick="toggleQueueSidebar()" class="text-spotify-grey hover:text-white text-sm"><i class="fa-solid fa-list-ul"></i></button>
             <div class="flex items-center space-x-2">
-                <i id="volume-icon" class="fa-solid fa-volume-low text-xs text-spotify-grey"></i>
+                <i class="fa-solid fa-volume-low text-xs text-spotify-grey"></i>
                 <input id="volume-bar" type="range" min="0" max="100" value="80" oninput="changeVolume()" class="w-20 accent-white h-1 bg-neutral-700 rounded-lg appearance-none cursor-pointer">
             </div>
         </div>
     </footer>
 
     <div id="toast-notification" class="fixed top-5 left-1/2 -translate-x-1/2 bg-neutral-900 border border-neutral-800 text-white px-4 py-2.5 rounded-full text-xs font-semibold shadow-2xl z-50 transition-all duration-300 transform translate-y-[-100px] opacity-0 flex items-center space-x-2">
-        <i id="toast-icon" class="fa-solid fa-circle-info"></i>
+        <i id="toast-icon" class="fa-solid fa-circle-info text-spotify-green"></i>
         <span id="toast-text"></span>
     </div>
 
     <script>
         const PIPED_INSTANCES = [
             "https://pipedapi.adminforge.de",
-            "https://piped-api.garudalinux.org",
             "https://pipedapi.privacydev.net",
-            "https://pipedapi.lunar.icu",
-            "https://pipedapi.oxymoron.biz",
-            "https://pipedapi.jus.bio"
+            "https://piped-api.garudalinux.org",
+            "https://pipedapi.lunar.icu"
+        ];
+
+        // Liste de serveurs Proxy CORS robustes en secours cascade
+        const CORS_PROXIES = [
+            (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`
         ];
         
-        let currentInstanceIndex = 0;
+        let currentInstanceIdx = 0;
+        let currentProxyIdx = 0;
+
         let appState = {
             currentTab: 'home',
             currentTrack: null,
             isPlaying: false,
             queue: [],
             currentQueueIndex: -1,
-            isShuffle: false,
-            isRepeat: false,
             favorites: JSON.parse(localStorage.getItem('flux_favorites')) || [],
-            playlists: JSON.parse(localStorage.getItem('flux_playlists')) || [],
-            activePlaylistId: null
+            playlists: JSON.parse(localStorage.getItem('flux_playlists')) || []
         };
 
         const audio = document.getElementById('audio-player');
 
         window.addEventListener('DOMContentLoaded', () => {
-            initInstance();
-            setupEventListeners();
+            initApp();
+        });
+
+        function initApp() {
+            // Configuration des champs de recherche
+            const searchInp = document.getElementById('search-input');
+            const mobileSearchInp = document.getElementById('mobile-search-input');
+
+            const handleSearch = (e) => {
+                if (e.key === 'Enter') searchKeyword(e.target.value);
+            };
+
+            searchInp.addEventListener('keypress', handleSearch);
+            mobileSearchInp.addEventListener('keypress', handleSearch);
+
+            audio.addEventListener('timeupdate', () => {
+                if(isNaN(audio.duration)) return;
+                const progress = (audio.currentTime / audio.duration) * 100;
+                document.getElementById('progress-bar').value = progress;
+                document.getElementById('time-current').textContent = formatTime(audio.currentTime);
+                document.getElementById('time-total').textContent = formatTime(audio.duration);
+            });
+
+            audio.addEventListener('ended', () => {
+                playNext();
+            });
+
             renderPlaylistsSidebar();
             loadFavorites();
             switchTab('home');
-        });
+        }
 
-        async function initInstance() {
-            const nameEl = document.getElementById('instance-name');
-            const indEl = document.getElementById('instance-indicator');
-            
-            for (let i = 0; i < PIPED_INSTANCES.length; i++) {
-                let url = PIPED_INSTANCES[currentInstanceIndex];
-                try {
-                    let res = await fetch(`${url}/instances`, { signal: AbortSignal.timeout(2000) });
-                    if (res.ok) {
-                        if(nameEl) nameEl.textContent = new URL(url).hostname;
-                        if(indEl) indEl.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
-                        return;
-                    }
-                } catch (e) {
-                    rotateInstance();
+        function switchTab(tabId) {
+            appState.currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if(btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.remove('text-spotify-grey');
+                    btn.classList.add('text-spotify-green');
+                } else {
+                    btn.classList.remove('text-spotify-green');
+                    btn.classList.add('text-spotify-grey');
                 }
-            }
-            if(nameEl) nameEl.textContent = "Bypass Réseau Actif";
+            });
         }
 
-        function getApiUrl() {
-            return PIPED_INSTANCES[currentInstanceIndex];
-        }
-
-        function rotateInstance() {
-            currentInstanceIndex = (currentInstanceIndex + 1) % PIPED_INSTANCES.length;
-            const nameEl = document.getElementById('instance-name');
-            if (nameEl) {
-                try { nameEl.textContent = new URL(getApiUrl()).hostname; } catch(e){}
-            }
-        }
-
-        // RECHERCHE AVEC CONDITION D'ARRÊT UNIQUE (Empêche la recherche infinie)
-// RECHERCHE AVEC PROXY DE SECOURS ANTI-BLOCAGE VERCEL
-        async function searchKeyword(query, retryCount = 0) {
+        // SYSTÈME DE RECHERCHE ULTRA-PROXIFIÉ CONTRE LES RESTRICTIONS VERCEL/CORS
+        async function searchKeyword(query, retryInstance = 0, retryProxy = 0) {
             if (!query || query.trim() === "") return;
             switchTab('search');
             
@@ -351,45 +338,50 @@
             const resultsContainer = document.getElementById('search-results');
 
             loading.classList.remove('hidden');
-            if(retryCount === 0) resultsContainer.innerHTML = '';
+            if(retryInstance === 0 && retryProxy === 0) resultsContainer.innerHTML = '';
 
-            if (retryCount >= PIPED_INSTANCES.length) {
+            // Si toutes les combinaisons instances + proxys échouent
+            if (retryInstance >= PIPED_INSTANCES.length) {
                 loading.classList.add('hidden');
                 resultsContainer.innerHTML = `
                     <div class="text-center text-zinc-400 py-12 max-w-md mx-auto space-y-4">
                         <i class="fa-solid fa-circle-exclamation text-4xl text-amber-500"></i>
-                        <p class="font-bold text-white text-lg">Le réseau de serveurs est restreint.</p>
-                        <p class="text-xs leading-relaxed">
-                            Les serveurs de musique bloquent temporairement les connexions depuis Vercel (Sécurité CORS). Réessayez dans un instant ou changez de mot-clé.
-                        </p>
-                        <button onclick="location.reload()" class="bg-white text-black font-bold px-4 py-2 text-xs rounded-full hover:scale-105 transition-transform">Actualiser</button>
+                        <p class="font-bold text-white text-lg">Le réseau rencontre des difficultés</p>
+                        <p class="text-xs">Les instances Piped rejettent temporairement le tunnel ou sont surchargées. Modifiez votre mot-clé ou réessayez dans un instant.</p>
+                        <button onclick="location.reload()" class="bg-white text-black font-bold px-4 py-2 text-xs rounded-full">Actualiser</button>
                     </div>`;
                 return;
             }
 
             try {
-                // Utilisation d'un proxy public pour contourner le blocage CORS de Vercel
-                let apiUrl = `${getApiUrl()}/search?q=${encodeURIComponent(query)}&filter=music_songs`;
-                let proxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
-
-                let response = await fetch(proxyUrl, { signal: AbortSignal.timeout(5000) });
-                if (!response.ok) throw new Error("Erreur de réponse proxy");
+                let targetInstance = PIPED_INSTANCES[(currentInstanceIdx + retryInstance) % PIPED_INSTANCES.length];
+                let proxyBuilder = CORS_PROXIES[(currentProxyIdx + retryProxy) % CORS_PROXIES.length];
                 
-                let data = await response.json();
+                let targetUrl = `${targetInstance}/search?q=${encodeURIComponent(query)}&filter=music_songs`;
+                let wrappedUrl = proxyBuilder(targetUrl);
+
+                let response = await fetch(wrappedUrl, { signal: AbortSignal.timeout(6000) });
+                if (!response.ok) throw new Error("Erreur Proxy");
+                
+                let resJson = await response.json();
+                
+                // Extraction intelligente suivant la structure du proxy utilisé (AllOrigins stocke dans .contents)
+                let rawData = resJson.contents ? JSON.parse(resJson.contents) : resJson;
+                
                 loading.classList.add('hidden');
                 
-                if(!data.items || data.items.length === 0) {
-                    resultsContainer.innerHTML = `<p class="text-center text-spotify-grey py-10">Aucun résultat pour "${escapeHtml(query)}".</p>`;
+                if(!rawData.items || rawData.items.length === 0) {
+                    resultsContainer.innerHTML = `<p class="text-center text-spotify-grey py-10">Aucun résultat trouvé pour "${escapeHtml(query)}".</p>`;
                     return;
                 }
 
                 resultsContainer.innerHTML = '';
-                data.items.forEach((item, idx) => {
+                rawData.items.forEach((item, idx) => {
                     let vId = item.url ? item.url.split("v=")[1] : item.id;
                     if(!vId) return;
 
-                    let title = item.title || "Musique";
-                    let artist = item.uploaderName || "Artiste";
+                    let title = item.title || "Titre inconnu";
+                    let artist = item.uploaderName || "Artiste inconnu";
                     let cover = item.thumbnail || "https://placehold.co/60";
                     let duration = formatTime(item.duration || 0);
 
@@ -398,7 +390,7 @@
                     div.innerHTML = `
                         <div class="flex items-center space-x-4 min-w-0 flex-grow" onclick="playDirect('${vId}', '${escapeHtml(title)}', '${escapeHtml(artist)}', '${cover}')">
                             <span class="text-spotify-grey text-sm w-4 group-hover:text-spotify-green">${idx + 1}</span>
-                            <img src="${cover}" class="w-10 h-10 rounded object-cover">
+                            <img src="${cover}" class="w-10 h-10 rounded object-cover shrink-0">
                             <div class="min-w-0">
                                 <p class="font-medium text-sm text-white truncate">${title}</p>
                                 <p class="text-xs text-spotify-grey truncate">${artist}</p>
@@ -412,49 +404,64 @@
                     resultsContainer.appendChild(div);
                 });
 
+                // On mémorise la combinaison fonctionnelle
+                currentInstanceIdx = (currentInstanceIdx + retryInstance) % PIPED_INSTANCES.length;
+                currentProxyIdx = (currentProxyIdx + retryProxy) % CORS_PROXIES.length;
+
             } catch (err) {
-                console.log("Échec de l'instance, rotation...");
-                rotateInstance();
-                setTimeout(() => searchKeyword(query, retryCount + 1), 300);
+                console.warn("Échec d'une route proxy, basculement de canal...");
+                if (retryProxy + 1 < CORS_PROXIES.length) {
+                    searchKeyword(query, retryInstance, retryProxy + 1);
+                } else {
+                    searchKeyword(query, retryInstance + 1, 0);
+                }
             }
         }
 
-        // LECTURE DIRECTE AVEC CONTRE-MESURES ANTI-BLOCAGE
-        async function playDirect(videoId, title, artist, cover, retryCount = 0) {
-            if (retryCount >= PIPED_INSTANCES.length) {
-                showToast("Ce titre subit des restrictions de zone. Essayez un autre morceau.", "fa-triangle-exclamation");
+        // RECONSTRUCTION DE LA REQUÊTE DE STREAM AUDIO SÉCURISÉE PAR LE PROXY
+        async function playDirect(videoId, title, artist, cover, retryInstance = 0, retryProxy = 0) {
+            if (retryInstance >= PIPED_INSTANCES.length) {
+                showToast("Désolé, les serveurs audio rejettent la liaison.", "fa-triangle-exclamation text-red-500");
                 return;
             }
 
             try {
-                showToast("Déchiffrement du flux audio...", "fa-compact-disc animate-spin");
-                let res = await fetch(`${getApiUrl()}/streams/${videoId}`, { signal: AbortSignal.timeout(4000) });
-                if (!res.ok) throw new Error("Serveur instable");
+                showToast("Préparation du flux de secours...", "fa-circle-notch animate-spin text-spotify-green");
                 
-                let data = await res.json();
-                if (data.error || !data.audioStreams || data.audioStreams.length === 0) throw new Error("Flux vide");
+                let targetInstance = PIPED_INSTANCES[(currentInstanceIdx + retryInstance) % PIPED_INSTANCES.length];
+                let proxyBuilder = CORS_PROXIES[(currentProxyIdx + retryProxy) % CORS_PROXIES.length];
+                
+                let targetUrl = `${targetInstance}/streams/${videoId}`;
+                let wrappedUrl = proxyBuilder(targetUrl);
 
-                let trackStream = data.audioStreams.find(s => s.mimeType.includes('audio/webm')) || data.audioStreams[0];
-                if (!trackStream || !trackStream.url) throw new Error("Lien introuvable");
+                let res = await fetch(wrappedUrl, { signal: AbortSignal.timeout(6000) });
+                if (!res.ok) throw new Error("Erreur Flux");
+                
+                let resJson = await res.json();
+                let rawData = resJson.contents ? JSON.parse(resJson.contents) : resJson;
 
+                if (!rawData.audioStreams || rawData.audioStreams.length === 0) throw new Error("Pas de flux");
+
+                // Priorité au format léger webm ou m4a
+                let trackStream = rawData.audioStreams.find(s => s.mimeType.includes('audio/webm')) || rawData.audioStreams[0];
+                
                 appState.currentTrack = { videoId, title, artist, cover };
-                audio.src = trackStream.url;
                 
-                audio.onerror = () => {
-                    audio.onerror = null;
-                    rotateInstance();
-                    playDirect(videoId, title, artist, cover, retryCount + 1);
-                };
-
+                audio.src = trackStream.url;
                 await audio.play();
+                
                 appState.isPlaying = true;
                 updateUIPlayer(title, artist, cover);
-                updatePlayButtons();
-                checkIfCurrentIsLiked();
+                
+                currentInstanceIdx = (currentInstanceIdx + retryInstance) % PIPED_INSTANCES.length;
+                currentProxyIdx = (currentProxyIdx + retryProxy) % CORS_PROXIES.length;
 
             } catch (e) {
-                rotateInstance();
-                await playDirect(videoId, title, artist, cover, retryCount + 1);
+                if (retryProxy + 1 < CORS_PROXIES.length) {
+                    await playDirect(videoId, title, artist, cover, retryInstance, retryProxy + 1);
+                } else {
+                    await playDirect(videoId, title, artist, cover, retryInstance + 1, 0);
+                }
             }
         }
 
@@ -463,30 +470,22 @@
             document.getElementById('player-artist').textContent = artist;
             document.getElementById('player-cover').src = cover;
 
-            const mini = document.getElementById('mini-player');
+            // Player Mobile
+            document.getElementById('mini-player').classList.remove('hidden');
             document.getElementById('mini-player-title').textContent = title;
             document.getElementById('mini-player-artist').textContent = artist;
             document.getElementById('mini-player-cover').src = cover;
-            mini.classList.remove('hidden');
-        }
 
-        function setupEventListeners() {
-            document.getElementById('search-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') searchKeyword(e.target.value);
-            });
-            document.getElementById('mobile-search-input').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') searchKeyword(e.target.value);
-            });
+            document.getElementById('btn-play').innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
+            document.getElementById('mini-btn-play').innerHTML = '<i class="fa-solid fa-pause text-white text-xl"></i>';
 
-            audio.addEventListener('timeupdate', () => {
-                if(isNaN(audio.duration)) return;
-                const progress = (audio.currentTime / audio.duration) * 100;
-                document.getElementById('progress-bar').value = progress;
-                document.getElementById('time-current').textContent = formatTime(audio.currentTime);
-                document.getElementById('time-total').textContent = formatTime(audio.duration);
-            });
-
-            audio.addEventListener('ended', () => { playNext(); });
+            // Coeur Favoris
+            const icon = document.getElementById('btn-like-current').querySelector('i');
+            if(appState.favorites.some(t => t.videoId === appState.currentTrack.videoId)) {
+                icon.className = "fa-solid fa-heart text-spotify-green";
+            } else {
+                icon.className = "fa-regular fa-heart text-spotify-grey";
+            }
         }
 
         function togglePlay() {
@@ -494,252 +493,158 @@
             if (appState.isPlaying) {
                 audio.pause();
                 appState.isPlaying = false;
+                document.getElementById('btn-play').innerHTML = '<i class="fa-solid fa-play text-xs ml-0.5"></i>';
+                document.getElementById('mini-btn-play').innerHTML = '<i class="fa-solid fa-play text-white text-xl"></i>';
             } else {
-                audio.play().catch(() => {});
+                audio.play().catch(()=>{});
                 appState.isPlaying = true;
+                document.getElementById('btn-play').innerHTML = '<i class="fa-solid fa-pause text-xs"></i>';
+                document.getElementById('mini-btn-play').innerHTML = '<i class="fa-solid fa-pause text-white text-xl"></i>';
             }
-            updatePlayButtons();
-        }
-
-        function updatePlayButtons() {
-            const icon = appState.isPlaying ? '<i class="fa-solid fa-pause text-sm"></i>' : '<i class="fa-solid fa-play text-sm ml-0.5"></i>';
-            document.getElementById('btn-play').innerHTML = icon;
-            document.getElementById('mini-btn-play').innerHTML = appState.isPlaying ? '<i class="fa-solid fa-pause text-white text-xl"></i>' : '<i class="fa-solid fa-play text-white text-xl"></i>';
         }
 
         function seekAudio() {
-            const bar = document.getElementById('progress-bar');
             if(!audio.duration) return;
-            audio.currentTime = (bar.value / 100) * audio.duration;
+            audio.currentTime = (document.getElementById('progress-bar').value / 100) * audio.duration;
         }
 
         function changeVolume() {
-            const val = document.getElementById('volume-bar').value;
-            audio.volume = val / 100;
-        }
-
-        function switchTab(tabId) {
-            appState.currentTab = tabId;
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                if(btn.getAttribute('data-tab') === tabId) {
-                    btn.classList.add('text-spotify-green');
-                    btn.classList.remove('text-spotify-grey');
-                } else {
-                    btn.classList.remove('text-spotify-green');
-                    btn.classList.add('text-spotify-grey');
-                }
-            });
-        }
-
-        function createPlaylistPrompt() {
-            let name = prompt("Nom de la playlist :");
-            if(!name || name.trim() === "") return;
-            let pl = { id: 'pl_' + Date.now(), name: name.trim(), tracks: [] };
-            appState.playlists.push(pl);
-            localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
-            renderPlaylistsSidebar();
-            showToast("Playlist créée !", "fa-folder-plus");
-        }
-
-        function renderPlaylistsSidebar() {
-            const container = document.getElementById('sidebar-playlists');
-            container.innerHTML = '';
-            appState.playlists.forEach(pl => {
-                let div = document.createElement('div');
-                div.className = "cursor-pointer hover:text-white transition-colors py-1 truncate";
-                div.innerHTML = `<span onclick="openPlaylistDetail('${pl.id}')"><i class="fa-solid fa-music mr-2 text-xs"></i>${escapeHtml(pl.name)}</span>`;
-                container.appendChild(div);
-            });
-        }
-
-        function openPlaylistDetail(id) {
-            let pl = appState.playlists.find(p => p.id === id);
-            if(!pl) return;
-            appState.activePlaylistId = id;
-            
-            switchTab('playlist-detail');
-            document.getElementById('playlist-detail-title').textContent = pl.name;
-            document.getElementById('playlist-detail-count').textContent = `${pl.tracks.length} titre(s)`;
-
-            const list = document.getElementById('playlist-detail-list');
-            list.innerHTML = pl.tracks.length === 0 ? '<p class="text-center text-spotify-grey py-10">Playlist vide.</p>' : '';
-
-            pl.tracks.forEach((track, idx) => {
-                let div = document.createElement('div');
-                div.className = "flex items-center justify-between p-2 rounded-md hover:bg-spotify-hover cursor-pointer";
-                div.innerHTML = `
-                    <div class="flex items-center space-x-4 min-w-0 flex-grow" onclick="playDirect('${track.videoId}', '${escapeHtml(track.title)}', '${escapeHtml(track.artist)}', '${track.cover}')">
-                        <span class="text-spotify-grey text-sm w-4">${idx + 1}</span>
-                        <img src="${track.cover}" class="w-10 h-10 rounded object-cover">
-                        <div class="min-w-0">
-                            <p class="font-medium text-sm text-white truncate">${track.title}</p>
-                            <p class="text-xs text-spotify-grey truncate">${track.artist}</p>
-                        </div>
-                    </div>
-                    <button onclick="event.stopPropagation(); removeTrackFromPlaylist('${id}', '${track.videoId}')" class="text-spotify-grey hover:text-red-500 px-2"><i class="fa-solid fa-trash"></i></button>
-                `;
-                list.appendChild(div);
-            });
-        }
-
-        function addTrackToPlaylistPrompt(videoId, title, artist, cover) {
-            if(appState.playlists.length === 0) {
-                alert("Créez d'abord une playlist dans la colonne de gauche.");
-                return;
-            }
-            let msg = "Entrez le numéro de la playlist :\n";
-            appState.playlists.forEach((p, idx) => { msg += `${idx + 1} - ${p.name}\n`; });
-            let choice = prompt(msg);
-            let idx = parseInt(choice) - 1;
-            if(isNaN(idx) || idx < 0 || idx >= appState.playlists.length) return;
-
-            let pl = appState.playlists[idx];
-            if(pl.tracks.some(t => t.videoId === videoId)) return;
-            pl.tracks.push({ videoId, title, artist, cover });
-            localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
-            showToast(`Ajouté à ${pl.name}`, "fa-check");
-        }
-
-        function removeTrackFromPlaylist(plId, videoId) {
-            let pl = appState.playlists.find(p => p.id === plId);
-            if(!pl) return;
-            pl.tracks = pl.tracks.filter(t => t.videoId !== videoId);
-            localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
-            openPlaylistDetail(plId);
-        }
-
-        function deleteCurrentPlaylist() {
-            if(!appState.activePlaylistId) return;
-            appState.playlists = appState.playlists.filter(p => p.id !== appState.activePlaylistId);
-            localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
-            renderPlaylistsSidebar();
-            switchTab('home');
-        }
-
-        function toggleLikeCurrent() {
-            if(!appState.currentTrack) return;
-            let track = appState.currentTrack;
-            let exists = appState.favorites.some(t => t.videoId === track.videoId);
-
-            if(exists) {
-                appState.favorites = appState.favorites.filter(t => t.videoId !== track.videoId);
-            } else {
-                appState.favorites.push(track);
-            }
-            localStorage.setItem('flux_favorites', JSON.stringify(appState.favorites));
-            loadFavorites();
-            checkIfCurrentIsLiked();
-        }
-
-        function checkIfCurrentIsLiked() {
-            if(!appState.currentTrack) return;
-            let exists = appState.favorites.some(t => t.videoId === appState.currentTrack.videoId);
-            const btn = document.getElementById('btn-like-current');
-            btn.className = exists ? "text-spotify-green hover:text-white" : "text-spotify-grey hover:text-white";
-            btn.innerHTML = exists ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
-        }
-
-        function loadFavorites() {
-            document.getElementById('favorites-count').textContent = `${appState.favorites.length} titre(s)`;
-            const list = document.getElementById('favorites-list');
-            list.innerHTML = appState.favorites.length === 0 ? `<div class="text-center py-10 text-spotify-grey">Aucun favori.</div>` : '';
-
-            appState.favorites.forEach((track, idx) => {
-                let div = document.createElement('div');
-                div.className = "flex items-center justify-between p-2 rounded-md hover:bg-spotify-hover cursor-pointer";
-                div.innerHTML = `
-                    <div class="flex items-center space-x-4 min-w-0 flex-grow" onclick="playDirect('${track.videoId}', '${escapeHtml(track.title)}', '${escapeHtml(track.artist)}', '${track.cover}')">
-                        <span class="text-spotify-grey text-sm w-4">${idx + 1}</span>
-                        <img src="${track.cover}" class="w-10 h-10 rounded object-cover">
-                        <div class="min-w-0">
-                            <p class="font-medium text-sm text-white truncate">${track.title}</p>
-                            <p class="text-xs text-spotify-grey truncate">${track.artist}</p>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(div);
-            });
+            audio.volume = document.getElementById('volume-bar').value / 100;
         }
 
         function addToQueueDirect(videoId, title, artist, cover) {
             appState.queue.push({ videoId, title, artist, cover });
-            renderQueueUI();
-            showToast("Ajouté à la file", "fa-list-ul");
+            showToast("Ajouté à la file d'attente");
+            renderQueue();
         }
 
-        function renderQueueUI() {
+        function renderQueue() {
             const container = document.getElementById('queue-list');
             if(appState.queue.length === 0) {
-                container.innerHTML = '<div class="text-center text-spotify-grey py-10">File vide.</div>';
+                container.innerHTML = '<div class="text-center text-spotify-grey py-10">La file d\'attente est vide.</div>';
                 return;
             }
             container.innerHTML = '';
-            appState.queue.forEach((t, i) => {
-                let div = document.createElement('div');
-                div.className = `p-2 rounded flex items-center space-x-3 cursor-pointer ${appState.currentQueueIndex === i ? 'bg-spotify-hover' : ''}`;
-                div.innerHTML = `
-                    <img src="${t.cover}" class="w-8 h-8 rounded object-cover">
-                    <div class="min-w-0 flex-grow" onclick="playQueueIndex(${i})">
-                        <p class="font-medium text-xs text-white truncate">${t.title}</p>
-                        <p class="text-[10px] text-spotify-grey truncate">${t.artist}</p>
+            appState.queue.forEach((track, i) => {
+                let d = document.createElement('div');
+                d.className = `p-2 rounded flex items-center justify-between ${appState.currentQueueIndex === i ? 'bg-spotify-hover text-spotify-green' : 'bg-zinc-900 text-white'}`;
+                d.innerHTML = `
+                    <div class="min-w-0 flex-grow cursor-pointer" onclick="playQueueIndex(${i})">
+                        <p class="font-medium truncate text-xs">${track.title}</p>
+                        <p class="text-[10px] text-spotify-grey truncate">${track.artist}</p>
                     </div>
+                    <button onclick="removeFromQueue(${i})" class="text-xs text-zinc-500 hover:text-red-400 ml-2"><i class="fa-solid fa-trash"></i></button>
                 `;
-                container.appendChild(div);
+                container.appendChild(d);
             });
         }
 
         function playQueueIndex(idx) {
             if(idx < 0 || idx >= appState.queue.length) return;
             appState.currentQueueIndex = idx;
-            let track = appState.queue[idx];
-            playDirect(track.videoId, track.title, track.artist, track.cover);
-            renderQueueUI();
+            let t = appState.queue[idx];
+            playDirect(t.videoId, t.title, t.artist, t.cover);
+            renderQueue();
         }
 
         function playNext() {
-            if(appState.queue.length === 0) return;
-            let nextIndex = appState.currentQueueIndex + 1;
-            if(appState.isShuffle) nextIndex = Math.floor(Math.random() * appState.queue.length);
-            if(nextIndex < appState.queue.length) playQueueIndex(nextIndex);
+            if(appState.queue.length > 0 && appState.currentQueueIndex + 1 < appState.queue.length) {
+                playQueueIndex(appState.currentQueueIndex + 1);
+            }
         }
 
         function playPrevious() {
-            if(appState.currentQueueIndex > 0) playQueueIndex(appState.currentQueueIndex - 1);
+            if(appState.queue.length > 0 && appState.currentQueueIndex - 1 >= 0) {
+                playQueueIndex(appState.currentQueueIndex - 1);
+            }
         }
 
-        function playAllFromPlaylist() {
-            let pl = appState.playlists.find(p => p.id === appState.activePlaylistId);
-            if(!pl || pl.tracks.length === 0) return;
-            appState.queue = [...pl.tracks];
-            playQueueIndex(0);
+        function removeFromQueue(idx) {
+            appState.queue.splice(idx, 1);
+            if(appState.currentQueueIndex === idx) appState.currentQueueIndex = -1;
+            else if(appState.currentQueueIndex > idx) appState.currentQueueIndex--;
+            renderQueue();
         }
 
-        function toggleShuffle() {
-            appState.isShuffle = !appState.isShuffle;
-            document.getElementById('btn-shuffle').classList.toggle('text-spotify-green', appState.isShuffle);
+        function toggleLikeCurrent() {
+            if(!appState.currentTrack) return;
+            let track = appState.currentTrack;
+            if(appState.favorites.some(t => t.videoId === track.videoId)) {
+                appState.favorites = appState.favorites.filter(t => t.videoId !== track.videoId);
+                showToast("Retiré des favoris");
+            } else {
+                appState.favorites.push(track);
+                showToast("Ajouté aux favoris");
+            }
+            localStorage.setItem('flux_favorites', JSON.stringify(appState.favorites));
+            loadFavorites();
+            updateUIPlayer(track.title, track.artist, track.cover);
         }
 
-        function toggleRepeat() {
-            appState.isRepeat = !appState.isRepeat;
-            document.getElementById('btn-repeat').classList.toggle('text-spotify-green', appState.isRepeat);
+        function loadFavorites() {
+            document.getElementById('favorites-count').textContent = `${appState.favorites.length} titre(s)`;
+            const list = document.getElementById('favorites-list');
+            if(appState.favorites.length === 0) {
+                list.innerHTML = '<p class="text-center text-spotify-grey py-10">Aucun titre liké pour le moment.</p>';
+                return;
+            }
+            list.innerHTML = '';
+            appState.favorites.forEach((t, index) => {
+                let d = document.createElement('div');
+                d.className = "flex items-center justify-between p-2 bg-spotify-lightDark rounded-md";
+                d.innerHTML = `
+                    <div class="flex items-center space-x-3 cursor-pointer min-w-0" onclick="playDirect('${t.videoId}', '${escapeHtml(t.title)}', '${escapeHtml(t.artist)}', '${t.cover}')">
+                        <img src="${t.cover}" class="w-8 h-8 rounded object-cover shrink-0">
+                        <div class="min-w-0">
+                            <p class="text-sm font-medium text-white truncate">${t.title}</p>
+                            <p class="text-xs text-spotify-grey truncate">${t.artist}</p>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(d);
+            });
         }
 
-        function toggleQueueSidebar() {
-            document.getElementById('queue-sidebar').classList.toggle('hidden');
-            renderQueueUI();
+        function createPlaylistPrompt() {
+            let name = prompt("Nom de votre nouvelle playlist :");
+            if(!name || name.trim() === "") return;
+            appState.playlists.push({ name: name.trim(), tracks: [] });
+            localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
+            renderPlaylistsSidebar();
+        }
+
+        function renderPlaylistsSidebar() {
+            const container = document.getElementById('sidebar-playlists');
+            container.innerHTML = '';
+            if(appState.playlists.length === 0) {
+                container.innerHTML = '<p class="text-xs text-zinc-600 italic">Aucune playlist</p>';
+                return;
+            }
+            appState.playlists.forEach((p, i) => {
+                let d = document.createElement('div');
+                d.className = "py-1 hover:text-white cursor-pointer truncate transition-colors";
+                d.textContent = p.name;
+                d.onclick = () => {
+                    document.getElementById('playlist-detail-title').textContent = p.name;
+                    document.getElementById('playlist-detail-count').textContent = `${p.tracks.length} titre(s)`;
+                    document.getElementById('playlist-detail-list').innerHTML = '<p class="text-spotify-grey text-xs">Playlist vide.</p>';
+                    switchTab('playlist-detail');
+                };
+                container.appendChild(d);
+            });
         }
 
         function showToast(text, iconClass = "fa-circle-info") {
             const toast = document.getElementById('toast-notification');
-            document.getElementById('toast-icon').className = `fa-solid ${iconClass}`;
+            document.getElementById('toast-icon').className = `fa-solid ${iconClass} text-spotify-green`;
             document.getElementById('toast-text').textContent = text;
             
-            toast.className = toast.className.replace('translate-y-[-100px]', 'translate-y-0').replace('opacity-0', 'opacity-100');
+            toast.classList.remove('opacity-0', 'translate-y-[-100px]');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            
             setTimeout(() => {
-                toast.className = toast.className.replace('translate-y-0', 'translate-y-[-100px]').replace('opacity-100', 'opacity-0');
+                toast.classList.add('opacity-0', 'translate-y-[-100px]');
+                toast.classList.remove('opacity-100', 'translate-y-0');
             }, 3000);
         }
 
@@ -752,7 +657,7 @@
 
         function escapeHtml(str) {
             if (!str) return '';
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#39;").replace(/"/g, "&quot;");
         }
     </script>
 </body>
