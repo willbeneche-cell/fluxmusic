@@ -339,6 +339,7 @@
         }
 
         // RECHERCHE AVEC CONDITION D'ARRÊT UNIQUE (Empêche la recherche infinie)
+// RECHERCHE AVEC PROXY DE SECOURS ANTI-BLOCAGE VERCEL
         async function searchKeyword(query, retryCount = 0) {
             if (!query || query.trim() === "") return;
             switchTab('search');
@@ -352,24 +353,27 @@
             loading.classList.remove('hidden');
             if(retryCount === 0) resultsContainer.innerHTML = '';
 
-            // SÉCURITÉ : Arrêt immédiat si on a fait le tour des serveurs sans réponse
             if (retryCount >= PIPED_INSTANCES.length) {
                 loading.classList.add('hidden');
                 resultsContainer.innerHTML = `
                     <div class="text-center text-zinc-400 py-12 max-w-md mx-auto space-y-4">
                         <i class="fa-solid fa-circle-exclamation text-4xl text-amber-500"></i>
-                        <p class="font-bold text-white text-lg">Le réseau de serveurs est indisponible.</p>
+                        <p class="font-bold text-white text-lg">Le réseau de serveurs est restreint.</p>
                         <p class="text-xs leading-relaxed">
-                            Si vous ouvrez ce fichier HTML directement depuis vos documents (double-clic), votre navigateur bloque les flux externes (Erreur CORS). Essayez un autre mot-clé ou rafraîchissez.
+                            Les serveurs de musique bloquent temporairement les connexions depuis Vercel (Sécurité CORS). Réessayez dans un instant ou changez de mot-clé.
                         </p>
-                        <button onclick="location.reload()" class="bg-white text-black font-bold px-4 py-2 text-xs rounded-full hover:scale-105 transition-transform">Actualiser le lecteur</button>
+                        <button onclick="location.reload()" class="bg-white text-black font-bold px-4 py-2 text-xs rounded-full hover:scale-105 transition-transform">Actualiser</button>
                     </div>`;
                 return;
             }
 
             try {
-                let response = await fetch(`${getApiUrl()}/search?q=${encodeURIComponent(query)}&filter=music_songs`, { signal: AbortSignal.timeout(4000) });
-                if (!response.ok) throw new Error("Erreur de réponse");
+                // Utilisation d'un proxy public pour contourner le blocage CORS de Vercel
+                let apiUrl = `${getApiUrl()}/search?q=${encodeURIComponent(query)}&filter=music_songs`;
+                let proxyUrl = `https://corsproxy.io/?${encodeURIComponent(apiUrl)}`;
+
+                let response = await fetch(proxyUrl, { signal: AbortSignal.timeout(5000) });
+                if (!response.ok) throw new Error("Erreur de réponse proxy");
                 
                 let data = await response.json();
                 loading.classList.add('hidden');
@@ -402,7 +406,6 @@
                         </div>
                         <div class="flex items-center space-x-4 text-spotify-grey text-sm ml-2">
                             <button onclick="event.stopPropagation(); addToQueueDirect('${vId}', '${escapeHtml(title)}', '${escapeHtml(artist)}', '${cover}')" class="hover:text-white"><i class="fa-solid fa-plus"></i></button>
-                            <button onclick="event.stopPropagation(); addTrackToPlaylistPrompt('${vId}', '${escapeHtml(title)}', '${escapeHtml(artist)}', '${cover}')" class="hover:text-white"><i class="fa-solid fa-folder-plus"></i></button>
                             <span>${duration}</span>
                         </div>
                     `;
@@ -410,8 +413,9 @@
                 });
 
             } catch (err) {
+                console.log("Échec de l'instance, rotation...");
                 rotateInstance();
-                setTimeout(() => searchKeyword(query, retryCount + 1), 200);
+                setTimeout(() => searchKeyword(query, retryCount + 1), 300);
             }
         }
 
