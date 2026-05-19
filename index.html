@@ -50,14 +50,6 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #3e3e3e;
         }
-        /* Animations */
-        .soundwave-bar {
-            animation: bounce 1.2s ease-in-out infinite alternate;
-        }
-        @keyframes bounce {
-            0% { height: 4px; }
-            100% { height: 20px; }
-        }
     </style>
 </head>
 <body class="h-screen flex flex-col justify-between">
@@ -165,14 +157,6 @@
                                 <div class="w-16 h-16 shrink-0 bg-emerald-900 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-fire"></i></div>
                                 <span class="font-bold text-sm line-clamp-2">Pop Hits</span>
                             </div>
-                            <div onclick="searchKeyword('Metal')" class="bg-spotify-lightDark rounded-md overflow-hidden flex items-center space-x-3 hover:bg-spotify-hover cursor-pointer group transition-all duration-300">
-                                <div class="w-16 h-16 shrink-0 bg-zinc-800 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-guitar"></i></div>
-                                <span class="font-bold text-sm line-clamp-2">Rock & Metal</span>
-                            </div>
-                            <div onclick="searchKeyword('Hans Zimmer')" class="bg-spotify-lightDark rounded-md overflow-hidden flex items-center space-x-3 hover:bg-spotify-hover cursor-pointer group transition-all duration-300">
-                                <div class="w-16 h-16 shrink-0 bg-amber-950 flex items-center justify-center text-xl text-white font-bold"><i class="fa-solid fa-music"></i></div>
-                                <span class="font-bold text-sm line-clamp-2">Musiques de Film</span>
-                            </div>
                         </div>
                     </div>
                 </section>
@@ -180,7 +164,6 @@
                 <section id="tab-search" class="tab-content space-y-6 hidden">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <h2 class="text-2xl font-bold">Résultats de recherche</h2>
-                        
                         <div class="relative w-full max-w-lg md:hidden">
                             <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-spotify-grey"></i>
                             <input id="mobile-search-input" type="text" placeholder="Rechercher..." class="w-full bg-white text-black pl-12 pr-4 py-3 rounded-full text-sm font-medium focus:outline-none focus:ring-2 focus:ring-spotify-green">
@@ -189,62 +172,24 @@
 
                     <div id="search-loading" class="hidden flex flex-col items-center justify-center py-20 space-y-3">
                         <div class="w-12 h-12 border-4 border-spotify-green border-t-transparent rounded-full animate-spin"></div>
-                        <p class="text-sm text-spotify-grey font-medium">Connexion aux canaux sécurisés et décodage...</p>
+                        <p class="text-sm text-spotify-grey font-medium">Recherche sécurisée sur les canaux libres...</p>
                     </div>
 
                     <div id="search-results" class="space-y-3"></div>
-
-                    <div id="search-genres" class="space-y-4">
-                        <h3 class="text-lg font-bold">Parcourir les styles</h3>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div onclick="searchKeyword('Chillhouse')" class="bg-rose-600 p-5 rounded-lg h-32 flex flex-col justify-between font-bold text-xl relative overflow-hidden cursor-pointer hover:scale-105 transition-transform">
-                                <span>Chill House</span>
-                                <i class="fa-solid fa-umbrella-beach absolute right-4 bottom-4 text-4xl opacity-20"></i>
-                            </div>
-                            <div onclick="searchKeyword('Hip Hop')" class="bg-amber-600 p-5 rounded-lg h-32 flex flex-col justify-between font-bold text-xl relative overflow-hidden cursor-pointer hover:scale-105 transition-transform">
-                                <span>Hip-Hop</span>
-                                <i class="fa-solid fa-microphone absolute right-4 bottom-4 text-4xl opacity-20"></i>
-                            </div>
-                            <div onclick="searchKeyword('Acoustic')" class="bg-sky-600 p-5 rounded-lg h-32 flex flex-col justify-between font-bold text-xl relative overflow-hidden cursor-pointer hover:scale-105 transition-transform">
-                                <span>Acoustique</span>
-                                <i class="fa-solid fa-guitar absolute right-4 bottom-4 text-4xl opacity-20"></i>
-                            </div>
-                            <div onclick="searchKeyword('Classical Piano')" class="bg-emerald-600 p-5 rounded-lg h-32 flex flex-col justify-between font-bold text-xl relative overflow-hidden cursor-pointer hover:scale-105 transition-transform">
-                                <span>Classique</span>
-                                <i class="fa-solid fa-wave-square absolute right-4 bottom-4 text-4xl opacity-20"></i>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <section id="tab-favorites" class="tab-content space-y-6 hidden">
-                    <div class="flex items-center space-x-6">
-                        <div class="bg-gradient-to-br from-indigo-700 to-purple-800 w-24 h-24 sm:w-32 sm:h-32 rounded-lg flex items-center justify-center text-white text-4xl sm:text-5xl shadow-2xl">
-                            <i class="fa-solid fa-heart"></i>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="text-xs uppercase font-extrabold tracking-wider text-spotify-grey">Playlist</span>
-                            <h2 class="text-3xl sm:text-5xl font-black">Titres Likés</h2>
-                            <p id="favorites-count" class="text-sm text-spotify-grey font-medium">0 titre</p>
-                        </div>
-                    </div>
+                    <h2 class="text-3xl font-black">Titres Likés</h2>
+                    <p id="favorites-count" class="text-sm text-spotify-grey">0 titre</p>
                     <div id="favorites-list" class="space-y-3"></div>
                 </section>
 
                 <section id="tab-playlist-detail" class="tab-content space-y-6 hidden">
-                    <div class="flex items-center space-x-6">
-                        <div class="bg-zinc-800 w-24 h-24 sm:w-32 sm:h-32 rounded-lg flex items-center justify-center text-white text-4xl sm:text-5xl shadow-2xl">
-                            <i class="fa-solid fa-music"></i>
-                        </div>
-                        <div class="space-y-1">
-                            <span class="text-xs uppercase font-extrabold tracking-wider text-spotify-grey">Playlist Locale</span>
-                            <h2 id="playlist-detail-title" class="text-3xl sm:text-5xl font-black">Nom de la Playlist</h2>
-                            <p id="playlist-detail-count" class="text-sm text-spotify-grey font-medium">0 titre</p>
-                        </div>
-                    </div>
+                    <h2 id="playlist-detail-title" class="text-3xl font-black">Playlist</h2>
+                    <p id="playlist-detail-count" class="text-sm text-spotify-grey">0 titre</p>
                     <div class="flex space-x-3">
-                        <button onclick="playAllFromPlaylist()" class="bg-spotify-green text-black font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform"><i class="fa-solid fa-play mr-2"></i>Tout lire</button>
-                        <button onclick="deleteCurrentPlaylist()" class="bg-red-600/20 text-red-500 hover:bg-red-600/30 transition-colors px-4 py-2 rounded-full font-semibold text-sm">Supprimer</button>
+                        <button onclick="playAllFromPlaylist()" class="bg-spotify-green text-black font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform">Tout lire</button>
+                        <button onclick="deleteCurrentPlaylist()" class="bg-red-600/20 text-red-500 px-4 py-2 rounded-full font-semibold text-sm">Supprimer</button>
                     </div>
                     <div id="playlist-detail-list" class="space-y-3"></div>
                 </section>
@@ -253,13 +198,13 @@
 
         <aside id="queue-sidebar" class="w-80 bg-black p-6 flex flex-col hidden lg:flex shrink-0 border-l border-neutral-900">
             <h3 class="text-lg font-bold mb-4">À suivre</h3>
-            <div id="queue-list" class="flex-grow overflow-y-auto space-y-3 text-sm pr-2">
+            <div id="queue-list" class="flex-grow overflow-y-auto space-y-3 text-sm">
                 <div class="text-center text-spotify-grey py-10">La file d'attente est vide.</div>
             </div>
         </aside>
     </div>
 
-    <div id="mini-player" class="fixed bottom-16 left-2 right-2 md:hidden bg-zinc-900/95 backdrop-blur-md rounded-lg p-3 flex items-center justify-between z-20 shadow-xl border border-neutral-800 hidden">
+    <div id="mini-player" class="fixed bottom-16 left-2 right-2 md:hidden bg-zinc-900/95 backdrop-blur-md rounded-lg p-3 flex items-center justify-between z-20 shadow-xl hidden">
         <div class="flex items-center space-x-3 min-w-0">
             <img id="mini-player-cover" src="https://placehold.co/50" alt="Cover" class="w-10 h-10 rounded object-cover">
             <div class="min-w-0">
@@ -328,7 +273,6 @@
     </div>
 
     <script>
-        // Instances Piped API mondiales de confiance mises à jour (2026)
         const PIPED_INSTANCES = [
             "https://pipedapi.adminforge.de",
             "https://piped-api.garudalinux.org",
@@ -379,7 +323,7 @@
                     rotateInstance();
                 }
             }
-            if(nameEl) nameEl.textContent = "Serveurs saturés - Bypass actif";
+            if(nameEl) nameEl.textContent = "Bypass Réseau Actif";
         }
 
         function getApiUrl() {
@@ -394,60 +338,54 @@
             }
         }
 
-        // MOTEUR DE RECHERCHE AMÉLIORÉ SANS REPRISE INFINIE EN CAS DE PANNE SYSTÈME
+        // RECHERCHE AVEC CONDITION D'ARRÊT UNIQUE (Empêche la recherche infinie)
         async function searchKeyword(query, retryCount = 0) {
             if (!query || query.trim() === "") return;
             switchTab('search');
             
-            // Met à jour les deux barres de recherche pour la synchro
             document.getElementById('search-input').value = query;
             document.getElementById('mobile-search-input').value = query;
 
             const loading = document.getElementById('search-loading');
             const resultsContainer = document.getElementById('search-results');
-            const genresSection = document.getElementById('search-genres');
 
             loading.classList.remove('hidden');
-            genresSection.classList.add('hidden');
+            if(retryCount === 0) resultsContainer.innerHTML = '';
 
-            if(retryCount === 0) {
-                resultsContainer.innerHTML = '';
-            }
-
-            // SÉCURITÉ : Si on a testé toutes les instances sans succès, on arrête les frais et on prévient
+            // SÉCURITÉ : Arrêt immédiat si on a fait le tour des serveurs sans réponse
             if (retryCount >= PIPED_INSTANCES.length) {
                 loading.classList.add('hidden');
                 resultsContainer.innerHTML = `
                     <div class="text-center text-zinc-400 py-12 max-w-md mx-auto space-y-4">
                         <i class="fa-solid fa-circle-exclamation text-4xl text-amber-500"></i>
-                        <p class="font-bold text-white text-lg">Aucun serveur de musique n'a répondu à la requête.</p>
+                        <p class="font-bold text-white text-lg">Le réseau de serveurs est indisponible.</p>
                         <p class="text-xs leading-relaxed">
-                            Si vous exécutez ce fichier en local (double-clic direct sur votre ordinateur), les protections de votre navigateur peuvent restreindre le lecteur. Essayez un autre mot-clé ou relancez la page.
+                            Si vous ouvrez ce fichier HTML directement depuis vos documents (double-clic), votre navigateur bloque les flux externes (Erreur CORS). Essayez un autre mot-clé ou rafraîchissez.
                         </p>
-                        <button onclick="location.reload()" class="bg-white text-black font-bold px-4 py-2 text-xs rounded-full hover:scale-105 transition-transform">Actualiser l'application</button>
+                        <button onclick="location.reload()" class="bg-white text-black font-bold px-4 py-2 text-xs rounded-full hover:scale-105 transition-transform">Actualiser le lecteur</button>
                     </div>`;
                 return;
             }
 
             try {
-                let response = await fetch(`${getApiUrl()}/search?q=${encodeURIComponent(query)}&filter=music_songs`, { signal: AbortSignal.timeout(5000) });
-                if (!response.ok) throw new Error("Status code issue");
+                let response = await fetch(`${getApiUrl()}/search?q=${encodeURIComponent(query)}&filter=music_songs`, { signal: AbortSignal.timeout(4000) });
+                if (!response.ok) throw new Error("Erreur de réponse");
                 
                 let data = await response.json();
                 loading.classList.add('hidden');
                 
                 if(!data.items || data.items.length === 0) {
-                    resultsContainer.innerHTML = `<p class="text-center text-spotify-grey py-10">Aucun résultat trouvé pour "${escapeHtml(query)}".</p>`;
+                    resultsContainer.innerHTML = `<p class="text-center text-spotify-grey py-10">Aucun résultat pour "${escapeHtml(query)}".</p>`;
                     return;
                 }
 
-                resultsContainer.innerHTML = ''; // Nettoyage propre
+                resultsContainer.innerHTML = '';
                 data.items.forEach((item, idx) => {
                     let vId = item.url ? item.url.split("v=")[1] : item.id;
                     if(!vId) return;
 
-                    let title = item.title || "Titre Audio";
-                    let artist = item.uploaderName || "Artiste Inconnu";
+                    let title = item.title || "Musique";
+                    let artist = item.uploaderName || "Artiste";
                     let cover = item.thumbnail || "https://placehold.co/60";
                     let duration = formatTime(item.duration || 0);
 
@@ -472,35 +410,30 @@
                 });
 
             } catch (err) {
-                console.warn(`Le serveur ${getApiUrl()} a échoué. Tentative sur le suivant...`);
                 rotateInstance();
-                // Rappel récursif encadré par le compteur de tentatives
-                setTimeout(() => searchKeyword(query, retryCount + 1), 250);
+                setTimeout(() => searchKeyword(query, retryCount + 1), 200);
             }
         }
 
-        // LECTEUR AUDIO AVEC DETECTION RAPIDE DE BLOCAGE DE ZONE GÉOGRAPHIQUE
+        // LECTURE DIRECTE AVEC CONTRE-MESURES ANTI-BLOCAGE
         async function playDirect(videoId, title, artist, cover, retryCount = 0) {
             if (retryCount >= PIPED_INSTANCES.length) {
-                showToast("Ce morceau subit un blocage strict de YouTube. Tentez un autre titre.", "fa-triangle-exclamation");
+                showToast("Ce titre subit des restrictions de zone. Essayez un autre morceau.", "fa-triangle-exclamation");
                 return;
             }
 
             try {
-                showToast("Négociation du flux...", "fa-compact-disc animate-spin");
+                showToast("Déchiffrement du flux audio...", "fa-compact-disc animate-spin");
                 let res = await fetch(`${getApiUrl()}/streams/${videoId}`, { signal: AbortSignal.timeout(4000) });
-                if (!res.ok) throw new Error("Stream unreachable");
+                if (!res.ok) throw new Error("Serveur instable");
                 
                 let data = await res.json();
-                if (data.error || !data.audioStreams || data.audioStreams.length === 0) {
-                    throw new Error("Geo-lock or empty stream list");
-                }
+                if (data.error || !data.audioStreams || data.audioStreams.length === 0) throw new Error("Flux vide");
 
                 let trackStream = data.audioStreams.find(s => s.mimeType.includes('audio/webm')) || data.audioStreams[0];
-                if (!trackStream || !trackStream.url) throw new Error("No URL found");
+                if (!trackStream || !trackStream.url) throw new Error("Lien introuvable");
 
                 appState.currentTrack = { videoId, title, artist, cover };
-                
                 audio.src = trackStream.url;
                 
                 audio.onerror = () => {
@@ -549,9 +482,7 @@
                 document.getElementById('time-total').textContent = formatTime(audio.duration);
             });
 
-            audio.addEventListener('ended', () => {
-                playNext();
-            });
+            audio.addEventListener('ended', () => { playNext(); });
         }
 
         function togglePlay() {
@@ -581,10 +512,6 @@
         function changeVolume() {
             const val = document.getElementById('volume-bar').value;
             audio.volume = val / 100;
-            const icon = document.getElementById('volume-icon');
-            if(val == 0) icon.className = "fa-solid fa-volume-xmark text-xs text-spotify-grey";
-            else if(val < 40) icon.className = "fa-solid fa-volume-low text-xs text-spotify-grey";
-            else icon.className = "fa-solid fa-volume-high text-xs text-spotify-grey";
         }
 
         function switchTab(tabId) {
@@ -618,10 +545,8 @@
             container.innerHTML = '';
             appState.playlists.forEach(pl => {
                 let div = document.createElement('div');
-                div.className = "cursor-pointer hover:text-white transition-colors py-1 truncate flex items-center justify-between group";
-                div.innerHTML = `
-                    <span onclick="openPlaylistDetail('${pl.id}')"><i class="fa-solid fa-music mr-2 text-xs"></i>${escapeHtml(pl.name)}</span>
-                `;
+                div.className = "cursor-pointer hover:text-white transition-colors py-1 truncate";
+                div.innerHTML = `<span onclick="openPlaylistDetail('${pl.id}')"><i class="fa-solid fa-music mr-2 text-xs"></i>${escapeHtml(pl.name)}</span>`;
                 container.appendChild(div);
             });
         }
@@ -636,12 +561,7 @@
             document.getElementById('playlist-detail-count').textContent = `${pl.tracks.length} titre(s)`;
 
             const list = document.getElementById('playlist-detail-list');
-            list.innerHTML = '';
-
-            if(pl.tracks.length === 0) {
-                list.innerHTML = '<p class="text-center text-spotify-grey py-10">Playlist vide.</p>';
-                return;
-            }
+            list.innerHTML = pl.tracks.length === 0 ? '<p class="text-center text-spotify-grey py-10">Playlist vide.</p>' : '';
 
             pl.tracks.forEach((track, idx) => {
                 let div = document.createElement('div');
@@ -673,10 +593,7 @@
             if(isNaN(idx) || idx < 0 || idx >= appState.playlists.length) return;
 
             let pl = appState.playlists[idx];
-            if(pl.tracks.some(t => t.videoId === videoId)) {
-                showToast("Déjà présent", "fa-info");
-                return;
-            }
+            if(pl.tracks.some(t => t.videoId === videoId)) return;
             pl.tracks.push({ videoId, title, artist, cover });
             localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
             showToast(`Ajouté à ${pl.name}`, "fa-check");
@@ -692,12 +609,10 @@
 
         function deleteCurrentPlaylist() {
             if(!appState.activePlaylistId) return;
-            if(!confirm("Supprimer la playlist définitivement ?")) return;
             appState.playlists = appState.playlists.filter(p => p.id !== appState.activePlaylistId);
             localStorage.setItem('flux_playlists', JSON.stringify(appState.playlists));
             renderPlaylistsSidebar();
             switchTab('home');
-            showToast("Playlist supprimée", "fa-trash");
         }
 
         function toggleLikeCurrent() {
@@ -707,10 +622,8 @@
 
             if(exists) {
                 appState.favorites = appState.favorites.filter(t => t.videoId !== track.videoId);
-                showToast("Retiré des favoris", "fa-heart-broken");
             } else {
                 appState.favorites.push(track);
-                showToast("Ajouté aux favoris", "fa-heart");
             }
             localStorage.setItem('flux_favorites', JSON.stringify(appState.favorites));
             loadFavorites();
@@ -721,24 +634,14 @@
             if(!appState.currentTrack) return;
             let exists = appState.favorites.some(t => t.videoId === appState.currentTrack.videoId);
             const btn = document.getElementById('btn-like-current');
-            if(exists) {
-                btn.className = "text-spotify-green hover:text-white";
-                btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
-            } else {
-                btn.className = "text-spotify-grey hover:text-white";
-                btn.innerHTML = '<i class="fa-regular fa-heart"></i>';
-            }
+            btn.className = exists ? "text-spotify-green hover:text-white" : "text-spotify-grey hover:text-white";
+            btn.innerHTML = exists ? '<i class="fa-solid fa-heart"></i>' : '<i class="fa-regular fa-heart"></i>';
         }
 
         function loadFavorites() {
             document.getElementById('favorites-count').textContent = `${appState.favorites.length} titre(s)`;
             const list = document.getElementById('favorites-list');
-            list.innerHTML = '';
-
-            if(appState.favorites.length === 0) {
-                list.innerHTML = `<div class="text-center py-10 text-spotify-grey">Aucun favori enregistré.</div>`;
-                return;
-            }
+            list.innerHTML = appState.favorites.length === 0 ? `<div class="text-center py-10 text-spotify-grey">Aucun favori.</div>` : '';
 
             appState.favorites.forEach((track, idx) => {
                 let div = document.createElement('div');
@@ -772,7 +675,7 @@
             container.innerHTML = '';
             appState.queue.forEach((t, i) => {
                 let div = document.createElement('div');
-                div.className = `p-2 rounded flex items-center space-x-3 cursor-pointer ${appState.currentQueueIndex === i ? 'bg-spotify-hover border border-spotify-green/30' : 'hover:bg-neutral-900'}`;
+                div.className = `p-2 rounded flex items-center space-x-3 cursor-pointer ${appState.currentQueueIndex === i ? 'bg-spotify-hover' : ''}`;
                 div.innerHTML = `
                     <img src="${t.cover}" class="w-8 h-8 rounded object-cover">
                     <div class="min-w-0 flex-grow" onclick="playQueueIndex(${i})">
@@ -796,17 +699,11 @@
             if(appState.queue.length === 0) return;
             let nextIndex = appState.currentQueueIndex + 1;
             if(appState.isShuffle) nextIndex = Math.floor(Math.random() * appState.queue.length);
-            if(nextIndex < appState.queue.length) {
-                playQueueIndex(nextIndex);
-            } else if(appState.isRepeat) {
-                playQueueIndex(0);
-            }
+            if(nextIndex < appState.queue.length) playQueueIndex(nextIndex);
         }
 
         function playPrevious() {
-            if(appState.currentQueueIndex > 0) {
-                playQueueIndex(appState.currentQueueIndex - 1);
-            }
+            if(appState.currentQueueIndex > 0) playQueueIndex(appState.currentQueueIndex - 1);
         }
 
         function playAllFromPlaylist() {
